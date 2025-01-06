@@ -11,42 +11,36 @@ Product_matrix = {
     ('supplier1','product11'): 100,
     ('supplier1','product12'): 100,
     ('supplier1','product13'): 100,    
-
     ('supplier2','product1'): 1,
     ('supplier2','product2'): 1,
     ('supplier2','product3'): 1,
     ('supplier2','product11'): 100,
     ('supplier2','product12'): 100,
     ('supplier2','product13'): 100,  
-
     ('supplier3','product1'): 1,
     ('supplier3','product2'): 1,
     ('supplier3','product3'): 100,
     ('supplier3','product11'): 100,
     ('supplier3','product12'): 100,
     ('supplier3','product13'): 100,  
-
     ('supplier4','product1'): 100,
     ('supplier4','product2'): 100,
     ('supplier4','product3'): 100,
     ('supplier4','product11'): 1,
     ('supplier4','product12'): 1,
     ('supplier4','product13'): 100,  
-
     ('supplier5','product1'): 100,
     ('supplier5','product2'): 100,
     ('supplier5','product3'): 100,
     ('supplier5','product11'): 1,
     ('supplier5','product12'): 1,
     ('supplier5','product13'): 1,  
-
     ('supplier6','product1'): 100,
     ('supplier6','product2'): 100,
     ('supplier6','product3'): 100,
     ('supplier6','product11'): 1,
     ('supplier6','product12'): 100,
     ('supplier6','product13'): 1        
-
 }
 
 suppliers = ['supplier1','supplier2', 'supplier3', 'supplier4', 'supplier5', 'supplier6']
@@ -74,11 +68,8 @@ m.setObjective(x.prod(Product_matrix) + y.prod(supplier_risk), GRB.MINIMIZE)
 
 # Save model for inspection
     
-##m.write('BOM_Suppliers.lp')
-
 m.optimize()
-
-#Solve
+# Solve
 m.update()
 m.optimize()
 
@@ -87,8 +78,3 @@ if m.status == GRB.OPTIMAL:
     print(f'Optimal cost: {m.objVal}')
 else:
     print("Not solved to optimality. Optimization status:", m.status)
-
-
-for v in m.getVars():
-    if v.x > 1e-6:
-        print(v.varName, v.x)
