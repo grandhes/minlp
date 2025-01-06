@@ -1,7 +1,7 @@
 import time
 from gurobipy import GRB, Model
-## Sample data
-
+# Sample data
+# OPTIGUIDE DATA CODE GOES HERE
 supplier_risk = {'supplier1': 10, 'supplier2': 1000, 'supplier3': 10,'supplier4': 1000, 'supplier5': 19, 'supplier5': 20 }
 
 Product_matrix = {
@@ -42,39 +42,38 @@ Product_matrix = {
     ('supplier6','product12'): 100,
     ('supplier6','product13'): 1        
 }
-
 suppliers = ['supplier1','supplier2', 'supplier3', 'supplier4', 'supplier5', 'supplier6']
 products = ['product1','product2', 'product3', 'product11', 'product12', 'product13']
-
 # Declare and initialize model
-m = Model('BOM_Suppliers')
+m = Model("BOM_Suppliers")
 
-# Create decision variables for the supplier model
+# OPTIGUIDE DATA CODE GOES HERE
+# Create variables
+
 x = m.addVars(Product_matrix.keys(),
                   vtype=GRB.INTEGER,
                   name="x")
-
 y = m.addVars(supplier_risk.keys(),
                   vtype=GRB.BINARY,
                   name="y")
 
-## create constraint
-product_constraints = m.addConstrs((x.sum('*',p) == 1 for p in products ), name='product_constraints')
+# OPTIGUIDE CONSTRAINT CODE GOES HERE
+
+product_constraints = m.addConstrs((x.sum('*',p) == 1 for p in products ), name="product_constraints")
 # constraint for supplier 1
-supplier_constraints = m.addConstrs( (x.sum(s,'*') - y.sum(s) * 1000 <= 0 for s in suppliers ), name='supplier_constraints')
-
-## set objective
+supplier_constraints = m.addConstrs( (x.sum(s,'*') - y.sum(s) * 1000 <= 0 for s in suppliers ), name="supplier_constraints")
+# set objective
 m.setObjective(x.prod(Product_matrix) + y.prod(supplier_risk), GRB.MINIMIZE)
-
-# Save model for inspection
-    
 m.optimize()
 # Solve
 m.update()
 m.optimize()
-
 print(time.ctime())
 if m.status == GRB.OPTIMAL:
     print(f'Optimal cost: {m.objVal}')
 else:
     print("Not solved to optimality. Optimization status:", m.status)
+
+for v in m.getVars():
+    if v.x > 1e-6:
+        print(v.varName, v.x)
